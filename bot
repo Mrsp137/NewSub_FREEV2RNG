@@ -1,0 +1,19 @@
+const TelegramBot = require('node-telegram-bot-api');
+
+// جایگزین کردن توکن و شناسه چت با مقادیر واقعی
+const token = '7427458738:AAFS9BUcG1G3tWvoN5rN14wVjW-gvhJASQs';
+const chatId = '@Mr_sp_20';
+
+// ایجاد نمونه‌ای از ربات
+const bot = new TelegramBot(token, {polling: true});
+
+// تابعی برای ارسال پیام با زمان فعلی
+const sendTime = () => {
+    const now = new Date();
+    const formattedTime = now.toLocaleTimeString();
+    bot.sendMessage(chatId, formattedTime);
+};
+
+// اجرای اولیه و سپس هر 60 ثانیه یکبار
+sendTime();
+setInterval(sendTime, 60000);
