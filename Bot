@@ -1,0 +1,40 @@
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+
+# توکن ربات خود را در اینجا قرار دهید
+TOKEN = '7971940071:AAGiVxQQfAy5IxqIf9X7jjsEv7px8xQNnqE'
+
+def start(update: Update, context: CallbackContext):
+    update.message.reply_text("سلام! فایل خود را برای من ارسال کنید تا آپلود شود.")
+
+def handle_file(update: Update, context: CallbackContext):
+    file = update.message.document
+    if file:
+        # دریافت فایل
+        file_id = file.file_id
+        file_name = file.file_name
+
+        # دانلود فایل
+        file_obj = context.bot.get_file(file_id)
+        file_path = f"./downloads/{file_name}"
+        file_obj.download(custom_path=file_path)
+
+        # ارسال پیام تایید
+        update.message.reply_text(f"فایل {file_name} با موفقیت ذخیره شد.")
+    else:
+        update.message.reply_text("لطفاً یک فایل معتبر ارسال کنید.")
+
+def main():
+    updater = Updater(TOKEN, use_context=True)
+    dispatcher = updater.dispatcher
+
+    # هندلرها
+    dispatcher.add_handler(CommandHandler("start", start))
+    dispatcher.add_handler(MessageHandler(Filters.document, handle_file))
+
+    # شروع ربات
+    updater.start_polling()
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
